@@ -10,7 +10,14 @@ def create_models():
     models = {
         'Linear Regression': LinearRegression(),
         'Decision Tree': DecisionTreeRegressor(max_depth=10, random_state=42),
-        'Random Forest': RandomForestRegressor(n_estimators=100, max_depth=15, random_state=42),
+        'Random Forest': RandomForestRegressor(
+            n_estimators=100,
+            max_depth=12,              # Changed from 15
+            min_samples_split=10,      # Added 
+            min_samples_leaf=5,        # Added
+            max_features='log2',       # Added
+            random_state=42
+        ),
         'Gradient Boosting': GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42)
     }
     return models
