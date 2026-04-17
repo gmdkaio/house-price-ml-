@@ -32,66 +32,6 @@ Metric explanations:
 - **MAE (Mean Absolute Error):** Average dollar amount the model's predictions are off. Lower is better.
 - **Overfitting:** When model learns training data patterns too well and performs poorly on new data. Gap between train and test accuracy indicates overfitting.
 
-## Power BI Reporting & Visualization
-
-The model predictions are exported to Power BI for interactive business intelligence analysis and stakeholder reporting.
-
-### Data Export Pipeline
-
-The `bi/prepare_data.py` script automates the complete export process:
-- Loads the trained model and generates predictions on all 20,640 properties
-- Calculates error metrics (absolute error, percentage error) for each prediction
-- Adds geographic regions (SF Bay Area, Central Coast, Southern California, Other)
-- Categorizes predictions by income quartiles and price ranges
-- Classifies prediction accuracy levels (Excellent, Good, Fair, Poor)
-- Exports enriched dataset to `data/california_housing_predictions.csv`
-
-### Power BI Dashboard Insights
-
-The Power BI report visualizes prediction quality and model behavior across multiple dimensions.
-
-**📊 View the Interactive Dashboard:** [Power BI Report Link](https://app.powerbi.com/view?r=eyJrIjoiNDIxZmFmNjMtN2MxYy00NjVlLWIwODAtZmUwNDQ2MDFkNDkxIiwidCI6ImMzN2IzN2EzLWU5ZTItNDJmOS1iYzY3LTRiOWI3MzhlMWRmMCJ9)
-
-### Dashboard Pages
-
-**Page 1: Model Accuracy Overview**
-
-![Model Accuracy Dashboard](images/bi1.png)
-
-Key metrics displayed:
-- Model R² Score: 0.7929 (explains ~79% of price variation)
-- Test MAE: $348k average prediction error
-- Accuracy Distribution: Breakdown of properties by prediction quality (Excellent, Good, Fair, Poor)
-- Total Properties Analyzed: 20,640
-
-**Page 2: Regional & Price Analysis**
-
-![Regional Analysis Dashboard](images/bi2.png)
-
-Visualizations include:
-- Price by House Age trends
-- Error percentage breakdown by price category (Budget, Affordable, Mid-range, Premium)
-- Regional average prices and income levels comparison
-- Error distribution across regions (SF Bay Area, Southern California, Central Coast, Other)
-
-**Page 3: Geographic Insights**
-
-![Geographic Distribution Dashboard](images/bi3.png)
-
-Geographic analysis shows:
-- House density mapping across California regions
-- Price distribution by region
-- Income correlation with house prices by location
-- Regional performance metrics
-
-### Running the Export
-
-```bash
-python bi/prepare_data.py
-```
-
-This generates the prediction dataset for Power BI dashboards, enabling stakeholders to explore model predictions interactively by region, price range, accuracy tier, and other dimensions.
-
 ## Problem Definition
 
 The task is a supervised regression problem.
@@ -302,6 +242,108 @@ What this analysis provides:
 - Tuning hyperparameters (tree depth, samples required to split, features per split) reduces overfitting.
 - The aggressive tuning accepted slightly lower accuracy (0.805 → 0.793 R²) for better generalization (16.8% → 8.1% gap).
 - This trade-off is common in machine learning.
+
+## Power BI Reporting & Visualization
+
+The model predictions are exported to Power BI for interactive business intelligence analysis and stakeholder reporting.
+
+### Data Export Pipeline
+
+The `bi/prepare_data.py` script automates the complete export process:
+- Loads the trained model and generates predictions on all 20,640 properties
+- Calculates error metrics (absolute error, percentage error) for each prediction
+- Adds geographic regions (SF Bay Area, Central Coast, Southern California, Other)
+- Categorizes predictions by income quartiles and price ranges
+- Classifies prediction accuracy levels (Excellent, Good, Fair, Poor)
+- Exports enriched dataset to `data/california_housing_predictions.csv`
+
+### Power BI Dashboard Insights
+
+The Power BI report visualizes prediction quality and model behavior across multiple dimensions.
+
+**View the Interactive Dashboard:** [Power BI Report Link](https://app.powerbi.com/view?r=eyJrIjoiNDIxZmFmNjMtN2MxYy00NjVlLWIwODAtZmUwNDQ2MDFkNDkxIiwidCI6ImMzN2IzN2EzLWU5ZTItNDJmOS1iYzY3LTRiOWI3MzhlMWRmMCJ9)
+
+### Dashboard Pages
+
+### Page 1: Model Accuracy Overview
+
+![Model Accuracy Dashboard](images/bi1.png)
+
+**Key Performance Metrics:**
+- **Test MAE:** $348k (mean absolute error in dollars)
+- **Mean Error:** 0.96% (average percentage error)
+- **R² Score:** 0.7929 (explains ~79% of price variation)
+- **Total Properties Analyzed:** 20,640
+
+**Accuracy Distribution:**
+- **Excellent (<5%):** 5,544 properties (26.37%)
+- **Good (5-10%):** 5,244 properties (25.38%)
+- **Fair (10-20%):** 5,670 properties (27.49%)
+- **Poor (>20%):** 4,291 properties (20.76%)
+
+**Insights:** The model performs well overall with 79% R² score, but shows higher errors on budget and premium price ranges.
+
+---
+
+### Page 2: Performance Analysis by Price & Region
+
+![Performance Analysis Dashboard](images/bi2.png)
+
+**Accuracy by Price Category:**
+| Price Category | Error % | Properties |
+|---|---|---|
+| Affordable ($100-200k) | -9.00% | 8,289 |
+| Mid-range ($200-300k) | 1.38% | 4,889 |
+| Premium (>$300k) | 9.84% | 3,866 |
+| Budget (<$100k) | -30.77% | 3,596 |
+
+**Key Findings:**
+- Model **underpredicts budget homes** (-30.77% error)
+- Model **underpredicts affordable homes** (-9.00% error)
+- Model **overpredicts premium homes** (+9.84% error)
+- Best accuracy on **mid-range homes** (1.38% error)
+
+**Price Trends by House Age:**
+- Newest homes (0-5 years): Average price ~$2.35M
+- Mid-age homes (20-40 years): Stable around $1.95-2.05M
+- Oldest homes (50+ years): Increasing trend to ~$2.75M
+
+**Accuracy by Region:**
+- **SF Bay Area:** -15% error (strictest predictions)
+- **Central Coast:** -5% error
+- **Southern California:** -5% error
+- **Other regions:** -17% error (most underpredict)
+
+---
+
+### Page 3: Geographic Analysis
+
+![Geographic Distribution Dashboard](images/bi3.png)
+
+**Regional Metrics:**
+
+| Region | Avg Price | Avg Income | Properties |
+|---|---|---|---|
+| Central Coast | $2.20M | 4.06 | High density |
+| Southern California | $2.24M | 4.00 | High density |
+| SF Bay Area | $1.82M | 3.43 | High density |
+| Other | $1.10M | 2.97 | Low density |
+
+**Geographic Insights:**
+- **Highest Prices:** Central Coast & Southern California ($2.20-2.24M)
+- **Highest Income Areas:** Central Coast (4.06 index)
+- **Densest Housing:** Coastal California (SF Bay + LA regions)
+- **Income-Price Correlation:** Strong in coastal urban areas, weaker inland
+
+---
+
+### Running the Export
+
+```bash
+python bi/prepare_data.py
+```
+
+This generates the prediction dataset for Power BI dashboards, enabling stakeholders to explore model predictions interactively by region, price range, accuracy tier, and other dimensions.
 
 ## How to Run
 
