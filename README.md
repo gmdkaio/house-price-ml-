@@ -32,6 +32,70 @@ Metric explanations:
 - **MAE (Mean Absolute Error):** Average dollar amount the model's predictions are off. Lower is better.
 - **Overfitting:** When model learns training data patterns too well and performs poorly on new data. Gap between train and test accuracy indicates overfitting.
 
+## Power BI Reporting & Visualization
+
+The model predictions are exported to Power BI for interactive business intelligence analysis and stakeholder reporting.
+
+### Data Export Pipeline
+
+The `bi/prepare_data.py` script automates the complete export process:
+- Loads the trained model and generates predictions on all 20,640 properties
+- Calculates error metrics (absolute error, percentage error) for each prediction
+- Adds geographic regions (SF Bay Area, Central Coast, Southern California, Other)
+- Categorizes predictions by income quartiles and price ranges
+- Classifies prediction accuracy levels (Excellent, Good, Fair, Poor)
+- Exports enriched dataset to `data/california_housing_predictions.csv`
+
+### Power BI Dashboard Insights
+
+The Power BI report visualizes prediction quality and model behavior across multiple dimensions.
+
+**View the Interactive Dashboard:**
+
+<iframe title="California Housing Price Predictions" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiNDIxZmFmNjMtN2MxYy00NjVlLWIwODAtZmUwNDQ2MDFkNDkxIiwidCI6ImMzN2IzN2EzLWU5ZTItNDJmOS1iYzY3LTRiOWI3MzhlMWRmMCJ9" frameborder="0" allowFullScreen="true"></iframe>
+
+Or view directly at: [Power BI Report Link](https://app.powerbi.com/view?r=eyJrIjoiNDIxZmFmNjMtN2MxYy00NjVlLWIwODAtZmUwNDQ2MDFkNDkxIiwidCI6ImMzN2IzN2EzLWU5ZTItNDJmOS1iYzY3LTRiOWI3MzhlMWRmMCJ9)
+
+### Dashboard Pages
+
+**Page 1: Model Accuracy Overview**
+
+![Model Accuracy Dashboard](images/bi1.png)
+
+Key metrics displayed:
+- Model R² Score: 0.7929 (explains ~79% of price variation)
+- Test MAE: $348k average prediction error
+- Accuracy Distribution: Breakdown of properties by prediction quality (Excellent, Good, Fair, Poor)
+- Total Properties Analyzed: 20,640
+
+**Page 2: Regional & Price Analysis**
+
+![Regional Analysis Dashboard](images/bi2.png)
+
+Visualizations include:
+- Price by House Age trends
+- Error percentage breakdown by price category (Budget, Affordable, Mid-range, Premium)
+- Regional average prices and income levels comparison
+- Error distribution across regions (SF Bay Area, Southern California, Central Coast, Other)
+
+**Page 3: Geographic Insights**
+
+![Geographic Distribution Dashboard](images/bi3.png)
+
+Geographic analysis shows:
+- House density mapping across California regions
+- Price distribution by region
+- Income correlation with house prices by location
+- Regional performance metrics
+
+### Running the Export
+
+```bash
+python bi/prepare_data.py
+```
+
+This generates the prediction dataset for Power BI dashboards, enabling stakeholders to explore model predictions interactively by region, price range, accuracy tier, and other dimensions.
+
 ## Problem Definition
 
 The task is a supervised regression problem.
